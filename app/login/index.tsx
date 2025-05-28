@@ -1,6 +1,7 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Text,
+  View,
   TextInput,
   TouchableOpacity,
   StyleSheet,
@@ -9,10 +10,13 @@ import {
   ScrollView,
 } from 'react-native';
 import { useState } from 'react';
+import { router } from 'expo-router';
+
+type LoginMethod = 'email' | 'phone';
 
 export default function LoginScreen() {
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
+  const [method, setMethod] = useState<LoginMethod>('email');
+  const [inputValue, setInputValue] = useState('');
   const [password, setPassword] = useState('');
 
   return (
@@ -27,21 +31,51 @@ export default function LoginScreen() {
         >
           <Text style={styles.heading}>Login</Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Phone Number"
-            keyboardType="phone-pad"
-            value={phone}
-            onChangeText={setPhone}
-          />
+          {/* --- Method Toggle --- */}
+          <View style={styles.toggleContainer}>
+            <TouchableOpacity
+              style={[
+                styles.toggleButton,
+                method === 'email' && styles.activeToggle,
+              ]}
+              onPress={() => setMethod('email')}
+            >
+              <Text
+                style={[
+                  styles.toggleText,
+                  method === 'email' && styles.activeText,
+                ]}
+              >
+                Email
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.toggleButton,
+                method === 'phone' && styles.activeToggle,
+              ]}
+              onPress={() => setMethod('phone')}
+            >
+              <Text
+                style={[
+                  styles.toggleText,
+                  method === 'phone' && styles.activeText,
+                ]}
+              >
+                Phone
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* --- Form Input Field --- */}
 
           <TextInput
             style={styles.input}
-            placeholder="Email"
-            keyboardType="email-address"
+            placeholder={method === 'email' ? 'Email' : 'Phone Number'}
+            keyboardType={method === 'email' ? 'email-address' : 'phone-pad'}
             autoCapitalize="none"
-            value={email}
-            onChangeText={setEmail}
+            value={inputValue}
+            onChangeText={setInputValue}
           />
 
           <TextInput
@@ -53,12 +87,21 @@ export default function LoginScreen() {
             onChangeText={setPassword}
           />
 
-          <TouchableOpacity style={styles.link}>
-            <Text style={styles.linkText}>Forgot Password?</Text>
-          </TouchableOpacity>
-
           <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+
+          {/* --- Links to other views --- */}
+
+          <TouchableOpacity style={styles.link}>
+            <Text style={styles.linkText}>Create a new account</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.link}
+            onPress={() => router.push('/forgot-password')}
+          >
+            <Text style={styles.linkText}>Forgot Password?</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -94,6 +137,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 16,
   },
+  toggleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  toggleText: {
+    fontSize: 14,
+    color: '#555',
+  },
+
+  activeToggle: {
+    backgroundColor: '#3B82F6',
+    borderColor: '#3B82F6',
+  },
+  activeText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  toggleButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    marginHorizontal: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+
   button: {
     backgroundColor: '#3B82F6',
     paddingVertical: 14,
@@ -107,7 +177,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   link: {
-    marginBottom: 16,
+    marginBottom: 8,
   },
   linkText: {
     color: '#3B82F6',

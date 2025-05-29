@@ -5,11 +5,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
-const categories = ['All', 'Hospitals', 'Restaurants', 'Movies'];
+const categories = ['ALL', 'Hospitals', 'Restaurants', 'Movies'];
 const dummyServices = [
   {
     id: 1,
@@ -59,12 +61,24 @@ const dummyServices = [
 ];
 
 export default function QueueScreen() {
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('ALL');
+  const [query, setQuery] = useState('');
 
-  const filtered =
-    selectedCategory === 'All'
-      ? dummyServices
-      : dummyServices.filter((service) => service.type === selectedCategory);
+  const filtered = useMemo(() => {
+    let results = dummyServices;
+
+    if (selectedCategory !== 'ALL') {
+      results = results.filter((service) => service.type === selectedCategory);
+    }
+
+    if (query.trim() !== '') {
+      const lowerQuery = query.toLocaleLowerCase();
+      results = results.filter((service) =>
+        service.name.toLowerCase().includes(lowerQuery)
+      );
+    }
+    return results;
+  }, [query, selectedCategory]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -97,6 +111,19 @@ export default function QueueScreen() {
             </TouchableOpacity>
           ))}
         </ScrollView>
+      </View>
+
+      {/* --- Search Bar --- */}
+      <View style={styles.searchContainer}>
+        <Ionicons name="search" size={20} color="#888" style={styles.icon} />
+        <TextInput
+          value={query}
+          onChangeText={setQuery}
+          style={styles.input}
+          placeholder="Search services..."
+          placeholderTextColor="#888"
+          returnKeyType="search"
+        />
       </View>
 
       {/* --- Services List --- */}
@@ -167,7 +194,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  //   Categories
+  // Categories
   categoryList: {
     paddingBottom: 12,
   },
@@ -286,4 +313,25 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
   },
+
+  // Search bar
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f5',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginVertical: 10,
+    marginHorizontal: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  icon: {
+    marginRight: 8,
+  },
+  input: { flex: 1, fontSize: 16, color: '#333' },
 });

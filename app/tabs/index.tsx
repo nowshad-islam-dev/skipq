@@ -1,13 +1,61 @@
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 
 const categories = ['All', 'Hospitals', 'Restaurants', 'Movies'];
-
 const dummyServices = [
-  { id: 1, name: 'Apollo Hospital', type: 'Hospitals' },
-  { id: 2, name: 'Pizza Inn', type: 'Restaurants' },
-  { id: 3, name: 'Cinema Star', type: 'Movies' },
+  {
+    id: 1,
+    name: 'Apollo Hospital',
+    type: 'Hospitals',
+    waitTime: '15 min',
+    queueLength: 12,
+    image:
+      'https://images.pexels.com/photos/668298/pexels-photo-668298.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+  },
+  {
+    id: 2,
+    name: 'Pizza Inn',
+    type: 'Restaurants',
+    waitTime: '8 min',
+    queueLength: 5,
+    image:
+      'https://images.pexels.com/photos/668298/pexels-photo-668298.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+  },
+  {
+    id: 3,
+    name: 'Cinema Star',
+    type: 'Movies',
+    waitTime: '25 min',
+    queueLength: 18,
+    image:
+      'https://images.pexels.com/photos/668298/pexels-photo-668298.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+  },
+  {
+    id: 4,
+    name: 'City General Hospital',
+    type: 'Hospitals',
+    waitTime: '30 min',
+    queueLength: 25,
+    image:
+      'https://images.pexels.com/photos/668298/pexels-photo-668298.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+  },
+  {
+    id: 5,
+    name: 'Burger Palace',
+    type: 'Restaurants',
+    waitTime: '12 min',
+    queueLength: 8,
+    image:
+      'https://images.pexels.com/photos/668298/pexels-photo-668298.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+  },
 ];
 
 export default function QueueScreen() {
@@ -19,74 +67,76 @@ export default function QueueScreen() {
       : dummyServices.filter((service) => service.type === selectedCategory);
 
   return (
-    <SafeAreaView style={{ flex: 1, padding: 16 }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 12 }}>
-        Browse Services
-      </Text>
+    <SafeAreaView style={styles.container}>
+      {/* --- Header --- */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Browse Services</Text>
+        <Text style={styles.subtitle}>Find and join queues near you</Text>
+      </View>
 
-      {/* Category Filters */}
+      {/* --- Categories Filter --- */}
+      <View style={styles.categoryList}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {categories.map((cat) => (
+            <TouchableOpacity
+              key={cat}
+              onPress={() => setSelectedCategory(cat)}
+              style={[
+                styles.categoryTag,
+                selectedCategory === cat && styles.categoryTagActive,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.categoryText,
+                  selectedCategory === cat && styles.categoryTextActive,
+                ]}
+              >
+                {cat}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* --- Services List --- */}
       <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={{ marginBottom: 16 }}
+        style={styles.serviceList}
+        showsVerticalScrollIndicator={false}
       >
-        {categories.map((cat) => (
-          <TouchableOpacity
-            key={cat}
-            onPress={() => setSelectedCategory(cat)}
-            style={{
-              paddingVertical: 8,
-              paddingHorizontal: 16,
-              borderRadius: 20,
-              backgroundColor: selectedCategory === cat ? '#3B82F6' : '#E5E7EB',
-              marginRight: 10,
-            }}
-          >
-            <Text style={{ color: selectedCategory === cat ? '#fff' : '#000' }}>
-              {cat}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      {/* Services */}
-      <ScrollView>
         {filtered.map((service) => (
-          <View
-            key={service.id}
-            style={{
-              backgroundColor: '#F3F4F6',
-              padding: 16,
-              borderRadius: 12,
-              marginBottom: 12,
-            }}
-          >
-            <Text style={{ fontSize: 18, fontWeight: '600' }}>
-              {service.name}
-            </Text>
-            <Text style={{ color: '#6B7280' }}>{service.type}</Text>
+          <View key={service.id} style={styles.card}>
+            <View style={styles.cardHeader}>
+              <View>
+                <Text style={styles.serviceName}>{service.name}</Text>
+                <Text style={styles.serviceType}>{service.type}</Text>
+              </View>
 
-            <View style={{ flexDirection: 'row', marginTop: 10, gap: 10 }}>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#10B981',
-                  paddingVertical: 10,
-                  paddingHorizontal: 16,
-                  borderRadius: 8,
-                }}
-              >
-                <Text style={{ color: '#fff' }}>Join Queue</Text>
+              <View style={styles.waitBox}>
+                <Text style={styles.waitLabel}>Wait Time</Text>
+                <Text style={styles.waitValue}>{service.waitTime}</Text>
+              </View>
+            </View>
+            <View>
+              <Image
+                resizeMode="cover"
+                style={styles.serviceImage}
+                source={{ uri: service.image }}
+              />
+            </View>
+
+            <View style={styles.queueInfo}>
+              <Text style={styles.queueText}>
+                {service.queueLength} people in queue
+              </Text>
+            </View>
+
+            <View style={styles.buttonGroup}>
+              <TouchableOpacity style={styles.joinButton}>
+                <Text style={styles.joinButtonText}>Join Queue</Text>
               </TouchableOpacity>
-
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#3B82F6',
-                  paddingVertical: 10,
-                  paddingHorizontal: 16,
-                  borderRadius: 8,
-                }}
-              >
-                <Text style={{ color: '#fff' }}>Show Details</Text>
+              <TouchableOpacity style={styles.detailsButton}>
+                <Text style={styles.detailsButtonText}>Details</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -95,3 +145,145 @@ export default function QueueScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+    paddingHorizontal: 16,
+  },
+  header: {
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#111827',
+  },
+  subtitle: {
+    fontSize: 15,
+    color: '#6B7280',
+    marginTop: 4,
+  },
+
+  //   Categories
+  categoryList: {
+    paddingBottom: 12,
+  },
+  categoryTag: {
+    backgroundColor: '#F3F4F6',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginRight: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  categoryTagActive: {
+    backgroundColor: '#3B82F6',
+    borderColor: '#3B82F6',
+  },
+  categoryText: {
+    fontSize: 14,
+    color: '#4B5563',
+    fontWeight: '700',
+  },
+  categoryTextActive: {
+    color: '#FFFFFF',
+  },
+
+  // Service Cards
+  serviceList: {
+    flex: 1,
+  },
+  serviceImage: {
+    width: 120,
+    height: 90,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    borderColor: '#E5E7EB',
+    borderWidth: 1,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  serviceName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+  serviceType: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 4,
+  },
+  waitBox: {
+    backgroundColor: '#BFDBFE',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    alignItems: 'flex-end',
+  },
+  waitLabel: {
+    fontSize: 12,
+    color: '#1E40AF',
+    fontWeight: '600',
+  },
+  waitValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1E3A8A',
+  },
+  queueInfo: {
+    marginBottom: 16,
+  },
+  queueText: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  joinButton: {
+    flex: 1,
+    backgroundColor: '#10B981',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  joinButtonText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  detailsButton: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#3B82F6',
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  detailsButtonText: {
+    color: '#3B82F6',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+});

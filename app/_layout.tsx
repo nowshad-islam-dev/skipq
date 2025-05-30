@@ -11,6 +11,18 @@ export default function RootLayout() {
         options={{ title: 'Forgot-Password' }}
       />
       <Stack.Screen name="tabs" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="profile/personal-info/index"
+        options={{ title: 'Personal Information' }}
+      />
+      <Stack.Screen
+        name="profile/settings/index"
+        options={{ title: 'Settings' }}
+      />
+      <Stack.Screen
+        name="profile/queue-history/index"
+        options={{ title: 'Queue History' }}
+      />
     </Stack>
   );
 }

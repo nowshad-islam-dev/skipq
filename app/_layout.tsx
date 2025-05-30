@@ -23,6 +23,10 @@ export default function RootLayout() {
         name="profile/queue-history/index"
         options={{ title: 'Queue History' }}
       />
+      <Stack.Screen
+        name="details/index"
+        options={{ title: 'Service Detail' }}
+      />
     </Stack>
   );
 }

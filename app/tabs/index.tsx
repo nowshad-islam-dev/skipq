@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 const categories = ['ALL', 'Hospitals', 'Restaurants', 'Movies'];
 const dummyServices = [
@@ -63,6 +64,7 @@ const dummyServices = [
 export default function QueueScreen() {
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [query, setQuery] = useState('');
+  const router = useRouter();
 
   const filtered = useMemo(() => {
     let results = dummyServices;
@@ -162,7 +164,10 @@ export default function QueueScreen() {
               <TouchableOpacity style={styles.joinButton}>
                 <Text style={styles.joinButtonText}>Join Queue</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.detailsButton}>
+              <TouchableOpacity
+                style={styles.detailsButton}
+                onPress={() => router.push('/details')}
+              >
                 <Text style={styles.detailsButtonText}>Details</Text>
               </TouchableOpacity>
             </View>

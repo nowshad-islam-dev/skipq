@@ -10,9 +10,11 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
 
 export default function ProfilePage() {
   const [image, setImage] = useState<string | null>(null);
+  const router = useRouter();
 
   const pickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -58,17 +60,26 @@ export default function ProfilePage() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Account</Text>
 
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => router.push('/profile/personal-info')}
+        >
           <Ionicons name="person-outline" size={22} color="#1E90FF" />
           <Text style={styles.itemText}>Personal information</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => router.push('/profile/queue-history')}
+        >
           <Ionicons name="time-outline" size={22} color="#1E90FF" />
           <Text style={styles.itemText}>Queue history</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity
+          style={styles.item}
+          onPress={() => router.push('/profile/settings')}
+        >
           <Ionicons name="settings-outline" size={22} color="#1E90FF" />
           <Text style={styles.itemText}>Settings</Text>
         </TouchableOpacity>

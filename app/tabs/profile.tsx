@@ -11,10 +11,29 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
+import { useMode } from '../../context/mode-context';
 
 export default function ProfilePage() {
   const [image, setImage] = useState<string | null>(null);
   const router = useRouter();
+  const { setMode } = useMode();
+
+  const handleModeSwitch = () => {
+    return Alert.alert('Switch Mode', 'Switch to business mode?', [
+      {
+        text: 'OK',
+        onPress: () => {
+          setMode('business');
+          router.replace('/business');
+        },
+        style: 'default',
+      },
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+    ]);
+  };
 
   const pickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -82,6 +101,12 @@ export default function ProfilePage() {
         >
           <Ionicons name="settings-outline" size={22} color="#1E90FF" />
           <Text style={styles.itemText}>Settings</Text>
+        </TouchableOpacity>
+
+        {/* work here */}
+        <TouchableOpacity style={styles.item} onPress={handleModeSwitch}>
+          <Ionicons name="bag-outline" size={22} color="#1E90FF" />
+          <Text style={styles.itemText}>Business Mode</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.item, { marginTop: 10 }]}>

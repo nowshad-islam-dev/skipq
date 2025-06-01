@@ -1,10 +1,24 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useMode } from '../context/mode-context';
+
 const Home = () => {
+  const router = useRouter();
+  const { mode, loading } = useMode();
+
+  useEffect(() => {
+    if (loading) return; // Wait for mode to load
+
+    if (mode === 'business') {
+      router.replace('/business');
+    } else {
+      router.replace('/tabs');
+    }
+  }, [mode, loading, router]);
   return (
     <SafeAreaView style={styles.container}>
       <MaterialCommunityIcons name="account-group" size={80} color="#F9405F" />

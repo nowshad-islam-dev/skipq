@@ -16,14 +16,14 @@ import { useMode } from '../../context/mode-context';
 export default function ProfilePage() {
   const [image, setImage] = useState<string | null>(null);
   const router = useRouter();
-  const { setMode } = useMode();
+  const { setModeState } = useMode();
 
   const handleModeSwitch = () => {
     return Alert.alert('Switch Mode', 'Switch to business mode?', [
       {
         text: 'OK',
         onPress: () => {
-          setMode('business');
+          setModeState('business');
           router.replace('/business');
         },
         style: 'default',
